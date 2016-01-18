@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		35223FC21C4D07FE00568E54 /* SwiftJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35223FC11C4D07FE00568E54 /* SwiftJSON.swift */; };
 		35D2D5B31C4D05BE00B19A34 /* SwiftJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 35D2D5B21C4D05BE00B19A34 /* SwiftJSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		35223FC11C4D07FE00568E54 /* SwiftJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftJSON.swift; sourceTree = "<group>"; };
 		35D2D5AF1C4D05BE00B19A34 /* SwiftJSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftJSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		35D2D5B21C4D05BE00B19A34 /* SwiftJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftJSON.h; sourceTree = "<group>"; };
 		35D2D5B41C4D05BE00B19A34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -48,6 +50,7 @@
 			children = (
 				35D2D5B21C4D05BE00B19A34 /* SwiftJSON.h */,
 				35D2D5B41C4D05BE00B19A34 /* Info.plist */,
+				35223FC11C4D07FE00568E54 /* SwiftJSON.swift */,
 			);
 			path = SwiftJSON;
 			sourceTree = "<group>";
@@ -90,6 +93,7 @@
 		35D2D5A61C4D05BE00B19A34 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Naohiro Hamada";
 				TargetAttributes = {
@@ -130,6 +134,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				35223FC21C4D07FE00568E54 /* SwiftJSON.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +233,7 @@
 		35D2D5B81C4D05BE00B19A34 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -239,12 +245,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.SwiftJSON;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		35D2D5B91C4D05BE00B19A34 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -278,6 +286,7 @@
 				35D2D5B91C4D05BE00B19A34 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

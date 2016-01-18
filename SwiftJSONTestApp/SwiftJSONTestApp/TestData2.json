@@ -1,0 +1,24 @@
+[
+ {
+    "name":"test-data-1",
+    "val-1":1,
+    "val-2":1.3,
+    "val-3":1.5e-4,
+    "val-4":true,
+    "val-5":false,
+    "array": [1, 2, 3, 4, "Five", "Six"]
+ },
+ {
+    "name":"test-data-2",
+    "val-1":10,
+    "val-2":10.23,
+    "val-3":10.5e-5,
+    "val-4":true,
+    "val-5":false,
+    "array": [11, 12, 13, 14, "Five", "Six"],
+    "dic": {
+             "internal-name":"internal-data",
+             "internal-data":10
+            }
+ },
+]
