@@ -19,9 +19,14 @@ class ViewController: UIViewController {
         let jsonData1Path = bundlePath.stringByAppendingPathComponent("TestData1.json")
         let jsonData1 = JSONDeserializer.deserializeWith(filepath: jsonData1Path)
         print(jsonData1)
+        let jsonData1OutPath = bundlePath.stringByAppendingPathComponent("TestData1-Out.json")
+        JSONSerializer.serialize(json: jsonData1, toFilePath: jsonData1OutPath)
+        
         let jsonData2Path = bundlePath.stringByAppendingPathComponent("TestData2.json")
         let jsonData2 = JSONDeserializer.deserializeWith(filepath: jsonData2Path)
         print(jsonData2)
+        let jsonData2OutPath = bundlePath.stringByAppendingPathComponent("TestData2-Out.json")
+        JSONSerializer.serialize(json: jsonData2, toFilePath: jsonData2OutPath)
     }
 
     override func didReceiveMemoryWarning() {

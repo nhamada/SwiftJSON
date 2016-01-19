@@ -45,8 +45,8 @@
 		35223FD51C4D246C00568E54 = {
 			isa = PBXGroup;
 			children = (
-				35223FF51C4D264500568E54 /* SwiftJSON.framework */,
 				35223FE01C4D246C00568E54 /* SwiftJSONTestApp */,
+				35223FF91C4D3C0E00568E54 /* Frameworks */,
 				35223FDF1C4D246C00568E54 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -72,6 +72,14 @@
 				35223FF71C4D2F0000568E54 /* TestData2.json */,
 			);
 			path = SwiftJSONTestApp;
+			sourceTree = "<group>";
+		};
+		35223FF91C4D3C0E00568E54 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				35223FF51C4D264500568E54 /* SwiftJSON.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -300,6 +308,7 @@
 				35223FF21C4D24ED00568E54 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

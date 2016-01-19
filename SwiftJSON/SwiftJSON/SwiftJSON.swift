@@ -11,7 +11,7 @@ import Foundation
 // MARK: - JSONDataType
 
 /// JSONで表現可能なデータ型
-internal enum JSONDataType {
+public enum JSONDataType {
     case Integer, Floating
     case String
     case Boolean
@@ -24,6 +24,9 @@ internal enum JSONDataType {
 
 /// JSONに格納されている値
 public protocol JSONValue {
+    /// 値のデータ型
+    var dataType: JSONDataType { get }
+    
     /// 整数値
     var intValue: Int { get }
     
@@ -75,8 +78,6 @@ public protocol JSONValue {
 // MARK: - JSONValue default implementation
 
 extension JSONValue {
-    /// 値のデータ型
-    var dataType: JSONDataType { return .Null }
     
     /// 整数値
     var intValue: Int { return Int.min }
@@ -119,6 +120,7 @@ extension JSONValue {
 
 /// 不定値を表すJSONデータ
 private struct JSONValueNull : JSONValue {
+    let dataType: JSONDataType = .Null
 }
 
 // MARK: - JSONValueInteger
@@ -372,5 +374,97 @@ public final class JSONDeserializer {
             return JSONValueNull()
         }
     }
+}
+
+// MARK: - JSONSerializer
+
+/// JSONを書き込むクラス
+public final class JSONSerializer {
+    private init() { }
     
+    /// 指定されたJSONオブジェクトを指定されたファイルパスに書き込む
+    /// - parameters:
+    ///   - json 書き込むJSONデータ
+    ///   - toFilePath 書き込み先のファイル
+    ///   - withOption 書き込み時のオプション
+    ///                デフォルト値は `NSJSONWritingOptions.PrettyPrinted`
+    /// - returns: ファイルが正しく書き出せた場合は`true`を返し、それ以外の場合は、`false`を返す
+    public class func serialize(json json: JSONValue, toFilePath filepath: String, withOption options: NSJSONWritingOptions = NSJSONWritingOptions.PrettyPrinted) -> Bool {
+        if json.isObject {
+            let data = serializeObject(json)
+            guard let serializedData = try? NSJSONSerialization.dataWithJSONObject(data, options: options) else {
+                return false
+            }
+            return writeData(serializedData, filepath: filepath)
+        } else if json.isArray {
+            let data = serializeArray(json)
+            guard let serializedData = try? NSJSONSerialization.dataWithJSONObject(data, options: options) else {
+                return false
+            }
+            return writeData(serializedData, filepath: filepath)
+        }
+        return false
+    }
+    
+    /// JSONオブジェクトからDictionaryに変換を行う
+    /// - parameter jsonObject 変換を行うJSONオブジェクト
+    /// - returns: 変換済みのDictionary
+    private class func serializeObject(jsonObject: JSONValue) -> [NSObject:AnyObject] {
+        var data = [NSObject:AnyObject]()
+        for (key, value) in jsonObject.objectValue {
+            switch value.dataType {
+            case .Integer:
+                data[key] = value.intValue
+            case .Floating:
+                data[key] = value.doubleValue
+            case .String:
+                data[key] = value.stringValue
+            case .Boolean:
+                data[key] = value.boolValue
+            case .Null:
+                break
+            case .Object:
+                data[key] = serializeObject(value)
+            case .Array:
+                data[key] = serializeArray(value)
+            }
+        }
+        return data
+    }
+    
+    /// JSONの配列データからArrayに変換を行う
+    /// - parameter jsonArray 変換を行うJSONの配列データ
+    /// - returns: 変換済みのArray
+    private class func serializeArray(jsonArray: JSONValue) -> [NSObject] {
+        var data = [NSObject]()
+        for value in jsonArray.arrayValue {
+            switch value.dataType {
+            case .Integer:
+                data.append(value.intValue)
+            case .Floating:
+                data.append(value.doubleValue)
+            case .String:
+                data.append(value.stringValue)
+            case .Boolean:
+                data.append(value.boolValue)
+            case .Null:
+                break
+            case .Object:
+                data.append(serializeObject(value))
+            case .Array:
+                data.append(serializeArray(value))
+            }
+        }
+        return data
+    }
+    
+    /// シリアライズされたデータをファイルへ書き出す
+    /// - parameters:
+    ///   - parameter data シリアライズしたJSONデータ
+    ///   - parameter filepath 書き出し先のファイル
+    /// - returns: ファイルが書き出せたかどうか
+    private class func writeData(data: NSData, filepath: String) -> Bool {
+        let url = NSURL(fileURLWithPath: filepath)
+        return data.writeToURL(url, atomically: true)
+    }
 }
