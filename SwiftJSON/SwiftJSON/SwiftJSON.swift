@@ -56,9 +56,9 @@ public protocol JSONValue {
     /// - parameter key キー名
     subscript(key: String) -> JSONValue { get set }
     
-    /// 配列に対して要素を追加する
+    /// 配列に要素を追加する
     /// - parameter newElement 追加する要素
-    mutating func append(value: AnyObject) -> Bool
+    mutating func append(newElement: JSONValue)
     
     /// 整数かどうか
     var isInteger: Bool { get }
@@ -165,7 +165,7 @@ extension JSONValue {
         }
     }
     
-    /// 配列に対して要素を追加する
+    /// 配列に要素を追加する
     /// - parameter newElement 追加する要素
     mutating func append(newElement: JSONValue) {
         assertionFailure("Type mismatch")
