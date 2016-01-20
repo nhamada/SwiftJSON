@@ -28,33 +28,37 @@ public protocol JSONValue {
     var dataType: JSONDataType { get }
     
     /// 整数値
-    var intValue: Int { get }
+    var intValue: Int { get set }
     
     /// 浮動小数点数
-    var doubleValue: Double { get }
+    var doubleValue: Double { get set }
     
     /// 文字列
-    var stringValue: String { get }
+    var stringValue: String { get set }
     
     /// 真理値
-    var boolValue: Bool { get }
+    var boolValue: Bool { get set }
     
     /// 配列データ
-    var arrayValue: [JSONValue] { get }
+    var arrayValue: [JSONValue] { get set }
     
     /// オブジェクト
-    var objectValue: [String:JSONValue] { get }
+    var objectValue: [String:JSONValue] { get set }
     
     /// null
     var nullValue: NSNull { get }
     
     /// 配列から指定した要素を取り出す
     /// - parameter index インデックス
-    subscript(index: Int) -> JSONValue { get }
+    subscript(index: Int) -> JSONValue { get set }
     
     /// オブジェクトから指定したキーの値を取り出す
     /// - parameter key キー名
-    subscript(key: String) -> JSONValue { get }
+    subscript(key: String) -> JSONValue { get set }
+    
+    /// 配列に対して要素を追加する
+    /// - parameter newElement 追加する要素
+    mutating func append(value: AnyObject) -> Bool
     
     /// 整数かどうか
     var isInteger: Bool { get }
@@ -83,27 +87,89 @@ public protocol JSONValue {
 extension JSONValue {
     
     /// 整数値
-    var intValue: Int { return Int.min }
+    var intValue: Int {
+        get {
+            return Int.min
+        }
+        set {
+            assertionFailure("Type mismatch")
+        }
+    }
     /// 浮動小数点数
-    var doubleValue: Double { return Double.NaN }
+    var doubleValue: Double {
+        get {
+            return Double.NaN
+        }
+        set {
+            assertionFailure("Type mismatch")
+        }
+    }
     /// 文字列
-    var stringValue: String { return "" }
+    var stringValue: String {
+        get {
+            return ""
+        }
+        set {
+            assertionFailure("Type mismatch")
+        }
+    }
     /// 真理値
-    var boolValue: Bool { return false }
+    var boolValue: Bool {
+        get {
+            return false
+        }
+        set {
+            assertionFailure("Type mismatch")
+        }
+    }
     /// 配列
-    var arrayValue: [JSONValue] { return [] }
+    var arrayValue: [JSONValue]  {
+        get {
+            return []
+        }
+        set {
+            assertionFailure("Type mismatch")
+        }
+    }
     /// オブジェクト
-    var objectValue: [String:JSONValue] { return [:] }
+    var objectValue: [String:JSONValue] {
+        get {
+            return [:]
+        }
+        set {
+            assertionFailure("Type mismatch")
+        }
+    }
     /// null
     var nullValue: NSNull { return NSNull() }
     
     /// 配列から指定した要素を取り出す
     /// - parameter index インデックス
-    subscript(index: Int) -> JSONValue { return JSONValueNull() }
+    subscript(index: Int) -> JSONValue {
+        get {
+            return JSONValueNull()
+        }
+        set {
+            assertionFailure("Type mismatch")
+        }
+    }
     
     /// オブジェクトから指定したキーの値を取り出す
     /// - parameter key キー名
-    subscript(key: String) -> JSONValue { return JSONValueNull() }
+    subscript(key: String) -> JSONValue {
+        get {
+            return JSONValueNull()
+        }
+        set {
+            assertionFailure("Type mismatch")
+        }
+    }
+    
+    /// 配列に対して要素を追加する
+    /// - parameter newElement 追加する要素
+    mutating func append(newElement: JSONValue) {
+        assertionFailure("Type mismatch")
+    }
     
     /// 整数かどうか
     var isInteger: Bool { return dataType == .Integer }
@@ -139,12 +205,42 @@ extension JSONValueNull : CustomStringConvertible, CustomDebugStringConvertible 
 private struct JSONValueInteger : JSONValue {
     let dataType: JSONDataType = .Integer
     
-    let value: Int
+    var value: Int
     
-    var intValue: Int { return value }
-    var doubleValue: Double { return Double(value) }
-    var stringValue: String { return value.description }
-    var boolValue: Bool { return Bool(value) }
+    var intValue: Int {
+        get {
+            return value
+        }
+        set {
+            value = newValue
+        }
+    }
+    var doubleValue: Double {
+        get {
+            return Double(value)
+        }
+        set {
+            value = Int(newValue)
+        }
+    }
+    var stringValue: String {
+        get {
+            return value.description
+        }
+        set {
+            if let newValue = Int(newValue) {
+                value = newValue
+            }
+        }
+    }
+    var boolValue: Bool {
+        get {
+            return Bool(value)
+        }
+        set {
+            value = Int(newValue)
+        }
+    }
 }
 
 extension JSONValueInteger : CustomStringConvertible, CustomDebugStringConvertible {
@@ -158,12 +254,42 @@ extension JSONValueInteger : CustomStringConvertible, CustomDebugStringConvertib
 private struct JSONValueFloating : JSONValue {
     let dataType: JSONDataType = .Floating
     
-    let value: Double
+    var value: Double
     
-    var intValue: Int { return Int(value) }
-    var doubleValue: Double { return value }
-    var stringValue: String { return value.description }
-    var boolValue: Bool { return Bool(value) }
+    var intValue: Int {
+        get {
+            return Int(value)
+        }
+        set {
+            value = Double(newValue)
+        }
+    }
+    var doubleValue: Double {
+        get {
+            return value
+        }
+        set {
+            value = newValue
+        }
+    }
+    var stringValue: String {
+        get {
+            return value.description
+        }
+        set {
+            if let newValue = Double(newValue) {
+                value = newValue
+            }
+        }
+    }
+    var boolValue: Bool {
+        get {
+            return Bool(value)
+        }
+        set {
+            value = Double(newValue)
+        }
+    }
 }
 
 extension JSONValueFloating : CustomStringConvertible, CustomDebugStringConvertible {
@@ -177,10 +303,24 @@ extension JSONValueFloating : CustomStringConvertible, CustomDebugStringConverti
 private struct JSONValueString : JSONValue {
     let dataType: JSONDataType = .String
     
-    let value: String
+    var value: String
     
-    var stringValue: String { return value }
-    var boolValue: Bool { return value.lowercaseString == "true" ? true : false }
+    var stringValue: String {
+        get {
+            return value
+        }
+        set {
+            value = newValue
+        }
+    }
+    var boolValue: Bool {
+        get {
+            return value.lowercaseString == "true" ? true : false
+        }
+        set {
+            value = String(newValue)
+        }
+    }
 }
 
 extension JSONValueString : CustomStringConvertible, CustomDebugStringConvertible {
@@ -194,12 +334,40 @@ extension JSONValueString : CustomStringConvertible, CustomDebugStringConvertibl
 private struct JSONValueBoolean : JSONValue {
     let dataType: JSONDataType = .Boolean
     
-    let value: Bool
+    var value: Bool
     
-    var intValue: Int { return Int(value) }
-    var doubleValue: Double { return Double(value) }
-    var stringValue: String { return value.description }
-    var boolValue: Bool { return value }
+    var intValue: Int {
+        get {
+            return Int(value)
+        }
+        set {
+            value = Bool(newValue)
+        }
+    }
+    var doubleValue: Double {
+        get {
+            return Double(value)
+        }
+        set {
+            value = Bool(newValue)
+        }
+    }
+    var stringValue: String {
+        get {
+            return value.description
+        }
+        set {
+            value = newValue.lowercaseString == "true"
+        }
+    }
+    var boolValue: Bool {
+        get {
+            return value
+        }
+        set {
+            value = newValue
+        }
+    }
 }
 
 extension JSONValueBoolean : CustomStringConvertible, CustomDebugStringConvertible {
@@ -213,22 +381,39 @@ extension JSONValueBoolean : CustomStringConvertible, CustomDebugStringConvertib
 private struct JSONValueArray : JSONValue {
     let dataType: JSONDataType = .Array
     
-    let value: [JSONValue]
+    var value: [JSONValue]
     
-    var stringValue: String { return value.description }
-    var arrayValue: [JSONValue] { return value }
+    var arrayValue: [JSONValue] {
+        get {
+            return value
+        }
+        set {
+            value = newValue
+        }
+    }
     
     subscript(index: Int) -> JSONValue {
-        if index >= 0 && index < value.count {
-            return value[index]
+        get {
+            if index >= 0 && index < value.count {
+                return value[index]
+            }
+            return JSONValueNull()
         }
-        return JSONValueNull()
+        set {
+            if index >= 0 && index < value.count {
+                value[index] = newValue
+            }
+        }
+    }
+    
+    mutating func append(newElement: JSONValue) {
+        self.value.append(newElement)
     }
 }
 
 extension JSONValueArray : CustomStringConvertible, CustomDebugStringConvertible {
-    var description: String { return stringValue }
-    var debugDescription: String { return stringValue }
+    var description: String { return value.description }
+    var debugDescription: String { return value.debugDescription }
 }
 
 // MARK: - JSONValueObject
@@ -237,22 +422,96 @@ extension JSONValueArray : CustomStringConvertible, CustomDebugStringConvertible
 private struct JSONValueObject : JSONValue {
     let dataType: JSONDataType = .Object
     
-    let value: [String:JSONValue]
+    var value: [String:JSONValue]
     
-    var stringValue: String { return value.description }
-    var objectValue: [String:JSONValue] { return value }
+    var objectValue: [String:JSONValue] {
+        get {
+            return value
+        }
+        set {
+            value = newValue
+        }
+    }
     
     subscript(key: String) -> JSONValue {
-        if value.keys.contains(key) {
-            return value[key]!
+        get {
+            if value.keys.contains(key) {
+                return value[key]!
+            }
+            return JSONValueNull()
         }
-        return JSONValueNull()
+        set {
+            value[key] = newValue
+        }
     }
 }
 
 extension JSONValueObject : CustomStringConvertible, CustomDebugStringConvertible {
-    var description: String { return stringValue }
-    var debugDescription: String { return stringValue }
+    var description: String { return value.description }
+    var debugDescription: String { return value.debugDescription }
+}
+
+public protocol JSONValueConvertible {
+    var jsonValue: JSONValue { get }
+}
+
+extension Int : JSONValueConvertible {
+    public var jsonValue: JSONValue {
+        return JSONValueInteger(value: self)
+    }
+}
+
+extension Float : JSONValueConvertible {
+    public var jsonValue: JSONValue {
+        return JSONValueFloating(value: Double(self))
+    }
+}
+
+extension Double : JSONValueConvertible {
+    public var jsonValue: JSONValue {
+        return JSONValueFloating(value: Double(self))
+    }
+}
+
+extension String : JSONValueConvertible{
+    public var jsonValue: JSONValue {
+        return JSONValueString(value: self)
+    }
+}
+
+extension Bool : JSONValueConvertible{
+    public var jsonValue: JSONValue {
+        return JSONValueBoolean(value: self)
+    }
+}
+
+extension Dictionary : JSONValueConvertible {
+    public var jsonValue: JSONValue {
+        var dic = [String:JSONValue]()
+        for (k, v) in self {
+            let key = String(k)
+            if let value = v as? AnyObject {
+                dic[key] = JSONDeserializer.deserializeValue(value)
+            } else {
+                dic[key] = JSONValueNull()
+            }
+        }
+        return JSONValueObject(value: dic)
+    }
+}
+
+extension Array : JSONValueConvertible {
+    public var jsonValue: JSONValue {
+        var array = [JSONValue]()
+        for v in self {
+            if let value = v as? AnyObject {
+                array.append(JSONDeserializer.deserializeValue(value))
+            } else {
+                array.append(JSONValueNull())
+            }
+        }
+        return JSONValueArray(value: array)
+    }
 }
 
 // MARK: - JSONDeserializer
@@ -309,7 +568,7 @@ public final class JSONDeserializer {
     /// ディクショナリーからJSONデータを読み込む
     /// - parameter dictionary ディクショナリー
     /// - returns: ディクショナリーを表すJSONデータ
-    private class func deserializeDictionary(dictionary: Dictionary<String, AnyObject>) -> JSONValue {
+    internal class func deserializeDictionary(dictionary: Dictionary<String, AnyObject>) -> JSONValue {
         var deserializedDictionary = [String:JSONValue]()
         for (k, v) in dictionary {
             let value = deserializeValue(v)
@@ -324,7 +583,7 @@ public final class JSONDeserializer {
     /// 配列からJSONデータを読み込む
     /// - parameter array 配列
     /// - returns: 配列を表すJSONデータ
-    private class func deserializeArray(array: Array<AnyObject>) -> JSONValue {
+    internal class func deserializeArray(array: Array<AnyObject>) -> JSONValue {
         var deserializedArray = [JSONValue]()
         for element in array {
             deserializedArray.append(deserializeValue(element))
@@ -336,7 +595,7 @@ public final class JSONDeserializer {
     /// - parameter value 読み込む値
     /// - returns: JSONデータ
     ///   読み込む値に応じたデータを格納する
-    private class func deserializeValue(value: AnyObject) -> JSONValue {
+    internal class func deserializeValue(value: AnyObject) -> JSONValue {
         if value.isKindOfClass(NSString) {
             return deserializeString(value as! NSString)
         }

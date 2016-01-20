@@ -29,8 +29,15 @@ class ViewController: UIViewController {
         JSONSerializer.serialize(json: jsonData2, toFilePath: jsonData2OutPath)
         
         let jsonData3Path = bundlePath.stringByAppendingPathComponent("TestData3.json")
-        let jsonData3 = JSONDeserializer.deserializeWith(filepath: jsonData3Path)
+        var jsonData3 = JSONDeserializer.deserializeWith(filepath: jsonData3Path)
         print(jsonData3)
+        if jsonData3.isObject {
+            jsonData3["new-data"] = 1.jsonValue
+            jsonData3["new-array"] = ["dd", "asf", 3].jsonValue
+            jsonData3["new-array"].append(10)
+            jsonData3["new-dic"] = ["test0": 13.0, "test1": true, "test2": ["sub"]].jsonValue
+            print("Updated: \(jsonData3)")
+        }
         let jsonData3OutPath = bundlePath.stringByAppendingPathComponent("TestData3-Out.json")
         JSONSerializer.serialize(json: jsonData3, toFilePath: jsonData3OutPath)
     }
