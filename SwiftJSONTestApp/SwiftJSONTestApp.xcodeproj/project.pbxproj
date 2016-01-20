@@ -15,6 +15,7 @@
 		35223FF41C4D25E900568E54 /* TestData1.json in Resources */ = {isa = PBXBuildFile; fileRef = 35223FF31C4D25E900568E54 /* TestData1.json */; };
 		35223FF61C4D264500568E54 /* SwiftJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35223FF51C4D264500568E54 /* SwiftJSON.framework */; };
 		35223FF81C4D2F0000568E54 /* TestData2.json in Resources */ = {isa = PBXBuildFile; fileRef = 35223FF71C4D2F0000568E54 /* TestData2.json */; };
+		357508541C4FB490001A3CB3 /* TestData3.json in Resources */ = {isa = PBXBuildFile; fileRef = 357508531C4FB490001A3CB3 /* TestData3.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		35223FF31C4D25E900568E54 /* TestData1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TestData1.json; sourceTree = "<group>"; };
 		35223FF51C4D264500568E54 /* SwiftJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftJSON.framework; path = "../SwiftJSON/build/Debug-iphoneos/SwiftJSON.framework"; sourceTree = "<group>"; };
 		35223FF71C4D2F0000568E54 /* TestData2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TestData2.json; sourceTree = "<group>"; };
+		357508531C4FB490001A3CB3 /* TestData3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TestData3.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 				35223FED1C4D24ED00568E54 /* Info.plist */,
 				35223FF31C4D25E900568E54 /* TestData1.json */,
 				35223FF71C4D2F0000568E54 /* TestData2.json */,
+				357508531C4FB490001A3CB3 /* TestData3.json */,
 			);
 			path = SwiftJSONTestApp;
 			sourceTree = "<group>";
@@ -143,6 +146,7 @@
 				35223FEC1C4D24D800568E54 /* LaunchScreen.storyboard in Resources */,
 				35223FE91C4D24B400568E54 /* Assets.xcassets in Resources */,
 				35223FE71C4D249000568E54 /* Main.storyboard in Resources */,
+				357508541C4FB490001A3CB3 /* TestData3.json in Resources */,
 				35223FF81C4D2F0000568E54 /* TestData2.json in Resources */,
 				35223FF41C4D25E900568E54 /* TestData1.json in Resources */,
 			);
