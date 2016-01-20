@@ -45,6 +45,9 @@ public protocol JSONValue {
     /// オブジェクト
     var objectValue: [String:JSONValue] { get }
     
+    /// null
+    var nullValue: NSNull { get }
+    
     /// 配列から指定した要素を取り出す
     /// - parameter index インデックス
     subscript(index: Int) -> JSONValue { get }
@@ -91,6 +94,8 @@ extension JSONValue {
     var arrayValue: [JSONValue] { return [] }
     /// オブジェクト
     var objectValue: [String:JSONValue] { return [:] }
+    /// null
+    var nullValue: NSNull { return NSNull() }
     
     /// 配列から指定した要素を取り出す
     /// - parameter index インデックス
@@ -121,6 +126,11 @@ extension JSONValue {
 /// 不定値を表すJSONデータ
 private struct JSONValueNull : JSONValue {
     let dataType: JSONDataType = .Null
+}
+
+extension JSONValueNull : CustomStringConvertible, CustomDebugStringConvertible {
+    var description: String { return "(null)" }
+    var debugDescription: String { return "(null)" }
 }
 
 // MARK: - JSONValueInteger
@@ -422,7 +432,7 @@ public final class JSONSerializer {
             case .Boolean:
                 data[key] = value.boolValue
             case .Null:
-                break
+                data[key] = value.nullValue
             case .Object:
                 data[key] = serializeObject(value)
             case .Array:
@@ -448,7 +458,7 @@ public final class JSONSerializer {
             case .Boolean:
                 data.append(value.boolValue)
             case .Null:
-                break
+                data.append(value.nullValue)
             case .Object:
                 data.append(serializeObject(value))
             case .Array:
