@@ -5,6 +5,6 @@
     "val-3": 1.5e-4,
     "val-4": true,
     "val-5": false,
-    "val-null": null
+    "val-null": null,
     "array": [1, 2, 3, 4, "Five", "Six"]
 }
