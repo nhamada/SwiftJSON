@@ -60,6 +60,32 @@ public protocol JSONValue {
     /// - parameter newElement 追加する要素
     mutating func append(newElement: JSONValue)
     
+    /// 配列の指定された位置に要素を挿入する
+    /// - parameters:
+    ///   - parameter newElement 挿入する要素
+    ///   - parameter atIndex 要素を挿入する位置
+    mutating func insert(newElement: JSONValue, atIndex i: Int)
+    
+    /// 配列の指定された位置から要素を削除する
+    /// - parameter index 削除する要素の位置
+    /// - returns: 削除された要素
+    mutating func removeAtIndex(index: Int) -> JSONValue
+    
+    /// 配列、または、オブジェクトのすべての要素を削除する
+    mutating func removeAll()
+    
+    /// 指定されたキーの値を更新する
+    /// - parameters:
+    ///   - parameter value 新しい値
+    ///   - parameter forKey 値を更新するキー
+    /// - returns: 更新前の値
+    mutating func updateValue(value: JSONValue, forKey key: String) -> JSONValue
+    
+    /// 指定されたキーの値を削除する
+    /// - parameter key 削除するキー
+    /// - returns: 削除された値
+    mutating func removeValueForKey(key: String) -> JSONValue
+    
     /// 整数かどうか
     var isInteger: Bool { get }
     
@@ -169,6 +195,45 @@ extension JSONValue {
     /// - parameter newElement 追加する要素
     mutating func append(newElement: JSONValue) {
         assertionFailure("Type mismatch")
+    }
+    
+    /// 配列の指定された位置に要素を挿入する
+    /// - parameters:
+    ///   - parameter newElement 挿入する要素
+    ///   - parameter atIndex 要素を挿入する位置
+    mutating func insert(newElement: JSONValue, atIndex i: Int) {
+        assertionFailure("Type mismatch")
+    }
+    
+    /// 配列の指定された位置から要素を削除する
+    /// - parameter index 削除する要素の位置
+    /// - returns: 削除された要素
+    mutating func removeAtIndex(index: Int) -> JSONValue {
+        assertionFailure("Type mismatch")
+        return JSONValueNull()
+    }
+    
+    /// 配列、または、オブジェクトのすべての要素を削除する
+    mutating func removeAll() {
+        assertionFailure("Type mismatch")
+    }
+    
+    /// 指定されたキーの値を更新する
+    /// - parameters:
+    ///   - parameter value 新しい値
+    ///   - parameter forKey 値を更新するキー
+    /// - returns: 更新前の値
+    mutating func updateValue(value: JSONValue, forKey key: String) -> JSONValue {
+        assertionFailure("Type mismatch")
+        return JSONValueNull()
+    }
+    
+    /// 指定されたキーの値を削除する
+    /// - parameter key 削除するキー
+    /// - returns: 削除された値
+    mutating func removeValueForKey(key: String) -> JSONValue {
+        assertionFailure("Type mismatch")
+        return JSONValueNull()
     }
     
     /// 整数かどうか
@@ -409,6 +474,15 @@ private struct JSONValueArray : JSONValue {
     mutating func append(newElement: JSONValue) {
         self.value.append(newElement)
     }
+    mutating func insert(newElement: JSONValue, atIndex i: Int) {
+        value.insert(newElement, atIndex: i)
+    }
+    mutating func removeAtIndex(index: Int) -> JSONValue {
+        return value.removeAtIndex(index)
+    }
+    mutating func removeAll() {
+        value.removeAll()
+    }
 }
 
 extension JSONValueArray : CustomStringConvertible, CustomDebugStringConvertible {
@@ -444,6 +518,24 @@ private struct JSONValueObject : JSONValue {
             value[key] = newValue
         }
     }
+    
+    mutating func removeAll() {
+        value.removeAll()
+    }
+    mutating func updateValue(value: JSONValue, forKey key: String) -> JSONValue {
+        if self.value.keys.contains(key) {
+            return self.value.updateValue(value, forKey: key)!
+        } else {
+            return JSONValueNull()
+        }
+    }
+    mutating func removeValueForKey(key: String) -> JSONValue {
+        if self.value.keys.contains(key) {
+            return value.removeValueForKey(key)!
+        } else {
+            return JSONValueNull()
+        }
+    }
 }
 
 extension JSONValueObject : CustomStringConvertible, CustomDebugStringConvertible {
@@ -451,41 +543,57 @@ extension JSONValueObject : CustomStringConvertible, CustomDebugStringConvertibl
     var debugDescription: String { return value.debugDescription }
 }
 
+// MARK: - Extensions for Swift Standard Library
+
+/// JSONValueを得るプロトコル
 public protocol JSONValueConvertible {
+    /// JSONValueとしての値
     var jsonValue: JSONValue { get }
 }
 
+/// IntからJSONValueを得るプロトコル
 extension Int : JSONValueConvertible {
+    /// JSONValueとしての値
     public var jsonValue: JSONValue {
         return JSONValueInteger(value: self)
     }
 }
 
+/// FloatからJSONValueを得るプロトコル
 extension Float : JSONValueConvertible {
+    /// JSONValueとしての値
     public var jsonValue: JSONValue {
         return JSONValueFloating(value: Double(self))
     }
 }
 
+/// DoubleからJSONValueを得るプロトコル
 extension Double : JSONValueConvertible {
+    /// JSONValueとしての値
     public var jsonValue: JSONValue {
         return JSONValueFloating(value: Double(self))
     }
 }
 
+/// StringからJSONValueを得るプロトコル
 extension String : JSONValueConvertible{
+    /// JSONValueとしての値
     public var jsonValue: JSONValue {
         return JSONValueString(value: self)
     }
 }
 
+/// BoolからJSONValueを得るプロトコル
 extension Bool : JSONValueConvertible{
+    /// JSONValueとしての値
     public var jsonValue: JSONValue {
         return JSONValueBoolean(value: self)
     }
 }
 
+/// DictionaryからJSONValueを得るプロトコル
 extension Dictionary : JSONValueConvertible {
+    /// JSONValueとしての値
     public var jsonValue: JSONValue {
         var dic = [String:JSONValue]()
         for (k, v) in self {
@@ -500,7 +608,9 @@ extension Dictionary : JSONValueConvertible {
     }
 }
 
+/// ArrayからJSONValueを得るプロトコル
 extension Array : JSONValueConvertible {
+    /// JSONValueとしての値
     public var jsonValue: JSONValue {
         var array = [JSONValue]()
         for v in self {
