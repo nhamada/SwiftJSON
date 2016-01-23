@@ -39,6 +39,8 @@ class ViewController: UIViewController {
             jsonData3["new-dic"]["append-data"] = 20.jsonValue
             let array: [Any?] = [1, 2, 3, nil]
             jsonData3["new-array"] = array.jsonValue
+            let dic: [String:Any?] = ["test0": 1, "test1": 12.3, "test2": nil, "test3": array]
+            jsonData3["new-dic-nil"] = dic.jsonValue
             print("Updated: \(jsonData3)")
         }
         let jsonData3OutPath = bundlePath.stringByAppendingPathComponent("TestData3-Out.json")
