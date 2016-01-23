@@ -612,15 +612,38 @@ extension Dictionary : JSONValueConvertible {
 extension Array : JSONValueConvertible {
     /// JSONValueとしての値
     public var jsonValue: JSONValue {
-        var array = [JSONValue]()
-        for v in self {
-            if let value = v as? AnyObject {
-                array.append(JSONDeserializer.deserializeValue(value))
-            } else {
-                array.append(JSONValueNull())
-            }
+        let mappedArray = self.map(elementToJSONValue)
+        return JSONValueArray(value: mappedArray)
+    }
+    
+    /// 配列の要素をJSONValueへ変換するヘルパー関数
+    private func elementToJSONValue(value: Any?) -> JSONValue {
+        if value == nil {
+            return JSONValueNull()
         }
-        return JSONValueArray(value: array)
+        let v = Mirror(reflecting: value!)
+        if v.children.count == 0 {
+            return JSONValueNull()
+        }
+        let (_, some) = v.children.first!
+        switch some {
+        case is Int:
+            return JSONValueInteger(value: some as! Int)
+        case is Float:
+            return JSONValueFloating(value: Double(some as! Float))
+        case is Double:
+            return JSONValueFloating(value: some as! Double)
+        case is String:
+            return JSONValueString(value: some as! String)
+        case is Bool:
+            return JSONValueBoolean(value: some as! Bool)
+        case is Array:
+            return (some as! Array<Any?>).jsonValue
+        case is Dictionary<String, JSONValueConvertible>:
+            return (some as! Dictionary<String, JSONValueConvertible>).jsonValue
+        default:
+            return JSONValueNull()
+        }
     }
 }
 
