@@ -598,13 +598,42 @@ extension Dictionary : JSONValueConvertible {
         var dic = [String:JSONValue]()
         for (k, v) in self {
             let key = String(k)
-            if let value = v as? AnyObject {
-                dic[key] = JSONDeserializer.deserializeValue(value)
-            } else {
-                dic[key] = JSONValueNull()
-            }
+            dic[key] = toJSONValue(v)
         }
         return JSONValueObject(value: dic)
+    }
+    
+    /// 辞書の値をJSONValueへ変換するヘルパー関数
+    private func toJSONValue(value: Any?) -> JSONValue {
+        if value == nil {
+            return JSONValueNull()
+        }
+        let v = Mirror(reflecting: value!)
+        if v.displayStyle != .Optional {
+            return JSONDeserializer.deserializeValue(value as! AnyObject)
+        }
+        if v.children.count == 0 {
+            return JSONValueNull()
+        }
+        let (_, some) = v.children.first!
+        switch some {
+        case is Int:
+            return JSONValueInteger(value: some as! Int)
+        case is Float:
+            return JSONValueFloating(value: Double(some as! Float))
+        case is Double:
+            return JSONValueFloating(value: some as! Double)
+        case is String:
+            return JSONValueString(value: some as! String)
+        case is Bool:
+            return JSONValueBoolean(value: some as! Bool)
+        case is Array<Any?>:
+            return (some as! Array<Any?>).jsonValue
+        case is Dictionary<String, JSONValueConvertible>:
+            return (some as! Dictionary<String, JSONValueConvertible>).jsonValue
+        default:
+            return JSONValueNull()
+        }
     }
 }
 
@@ -622,6 +651,9 @@ extension Array : JSONValueConvertible {
             return JSONValueNull()
         }
         let v = Mirror(reflecting: value!)
+        if v.displayStyle != .Optional {
+            return JSONDeserializer.deserializeValue(value as! AnyObject)
+        }
         if v.children.count == 0 {
             return JSONValueNull()
         }
