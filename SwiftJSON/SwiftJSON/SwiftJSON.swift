@@ -629,8 +629,8 @@ extension Dictionary : JSONValueConvertible {
             return JSONValueBoolean(value: some as! Bool)
         case is Array<Any?>:
             return (some as! Array<Any?>).jsonValue
-        case is Dictionary<String, JSONValueConvertible>:
-            return (some as! Dictionary<String, JSONValueConvertible>).jsonValue
+        case is Dictionary<String, Any?>, is NSDictionary:
+            return (some as! Dictionary<String, Any?>).jsonValue
         default:
             return JSONValueNull()
         }
@@ -658,6 +658,7 @@ extension Array : JSONValueConvertible {
             return JSONValueNull()
         }
         let (_, some) = v.children.first!
+        print(v.children.first)
         switch some {
         case is Int:
             return JSONValueInteger(value: some as! Int)
@@ -671,8 +672,14 @@ extension Array : JSONValueConvertible {
             return JSONValueBoolean(value: some as! Bool)
         case is Array:
             return (some as! Array<Any?>).jsonValue
-        case is Dictionary<String, JSONValueConvertible>:
-            return (some as! Dictionary<String, JSONValueConvertible>).jsonValue
+        case is Dictionary<String, Any?>:
+            return (some as! Dictionary<String, Any?>).jsonValue
+        case is NSDictionary:
+            guard let tmp = some as? NSDictionary else {
+                return JSONValueNull()
+            }
+            let dic = tmp as Dictionary
+            return dic.jsonValue
         default:
             return JSONValueNull()
         }
