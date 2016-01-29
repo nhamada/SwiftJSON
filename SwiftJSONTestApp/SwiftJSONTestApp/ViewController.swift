@@ -10,7 +10,7 @@ import UIKit
 import SwiftJSON
 
 class ViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -35,9 +35,9 @@ class ViewController: UIViewController {
             jsonData3["new-data"] = 1.jsonValue
             jsonData3["new-array"] = ["dd", "asf", 3].jsonValue
             jsonData3["new-array"].append(10.jsonValue)
-            jsonData3["new-dic"] = ["test0": 13.0, "test1": true, "test2": ["sub", "data"]].jsonValue
+            jsonData3["new-dic"] = ["test0": 13.0, "test1": true, "test2": ["sub", "data", false, 10.2]].jsonValue
             jsonData3["new-dic"]["append-data"] = 20.jsonValue
-            let array: [Any?] = [1, 2, 3, nil]
+            let array: [Any?] = [["data0": "data"], ["data1": "data"], ["data2": "data"], ["data3":["child0":1, "child1": false, "child2":"string"]], nil]
             jsonData3["new-array"] = array.jsonValue
             let dic: [String:Any?] = ["test0": 1, "test1": 12.3, "test2": nil, "test3": array]
             jsonData3["new-dic-nil"] = dic.jsonValue
@@ -45,13 +45,18 @@ class ViewController: UIViewController {
         }
         let jsonData3OutPath = bundlePath.stringByAppendingPathComponent("TestData3-Out.json")
         JSONSerializer.serialize(json: jsonData3, toFilePath: jsonData3OutPath)
+        
+        let jsonData4Path = bundlePath.stringByAppendingPathComponent("TestData3-Out.json")
+        let jsonData4 = JSONDeserializer.deserializeWith(filepath: jsonData4Path)
+        print(jsonData4)
+        let jsonData4OutPath = bundlePath.stringByAppendingPathComponent("TestData3-Out-Out.json")
+        JSONSerializer.serialize(json: jsonData4, toFilePath: jsonData4OutPath)
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
+    
+    
 }
-
